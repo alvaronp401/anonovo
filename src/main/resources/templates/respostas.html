@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>📋 Respostas do Quiz</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: gold;
+      text-shadow: 0 0 10px gold;
+      margin-top: 20px;
+    }
+
+    h2 {
+      color: gold;
+      text-shadow: 0 0 15px gold;
+      margin-top: 30px;
+    }
+
+    table {
+      margin: 30px auto;
+      border-collapse: collapse;
+      width: 75%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border-bottom: 1px solid gold;
+      padding: 10px;
+    }
+
+    th {
+      color: gold;
+      font-size: 1.1rem;
+    }
+
+    tr:hover {
+      background: rgba(255, 215, 0, 0.2);
+    }
+
+    canvas {
+      max-width: 600px;
+      margin: 20px auto;
+      display: block;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .ranking {
+      margin: 25px auto;
+      max-width: 500px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .ranking h3 {
+      text-align: center;
+      color: gold;
+      text-shadow: 0 0 10px gold;
+    }
+
+    .rank-item {
+      font-size: 1.1rem;
+      margin: 10px 0;
+    }
+
+    .rank-item span {
+      font-weight: bold;
+    }
+
+    a {
+      color: gold;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+    a:hover {
+      text-shadow: 0 0 15px gold;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 Respostas do Quiz</h1>
+
+  <!-- 🎨 Gráfico de Pizza -->
+  <h2>🏆 Distribuição das Respostas</h2>
+  <canvas id="graficoRespostas"></canvas>
+
+  <!-- 🏅 Ranking -->
+  <div class="ranking" id="ranking">
+    <h3>Ranking dos Mais Votados 🥇</h3>
+    <div id="ranking-lista"></div>
+  </div>
+
+  <!-- Importa o Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Busca os dados do backend
+    fetch('/respostas/json')
+      .then(res => res.json())
+      .then(data => {
+        const contagem = {};
+
+        // Conta quantas vezes cada resposta foi escolhida
+        data.forEach(r => {
+          r.respostas.forEach(resp => {
+            contagem[resp] = (contagem[resp] || 0) + 1;
+          });
+        });
+
+        const labels = Object.keys(contagem);
+        const valores = Object.values(contagem);
+        const total = valores.reduce((a, b) => a + b, 0);
+
+        // 🎨 Cores do gráfico
+        const cores = [
+          "#FFD700", "#FFA500", "#FF6347", "#32CD32",
+          "#1E90FF", "#BA55D3", "#FF69B4", "#40E0D0"
+        ];
+
+        // 🎂 Gráfico em pizza
+        const ctx = document.getElementById("graficoRespostas").getContext("2d");
+        new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: labels,
+            datasets: [{
+              data: valores,
+              backgroundColor: cores,
+              borderColor: "#000",
+              borderWidth: 1.5
+            }]
+          },
+          options: {
+            responsive: true,
+            animation: {
+              animateScale: true,
+              animateRotate: true
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: "white",
+                  font: { weight: 'bold' }
+                }
+              },
+              title: {
+                display: true,
+                text: "Distribuição Geral das Respostas 🥳",
+                color: "gold",
+                font: { size: 18, weight: "bold" }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const valor = context.parsed;
+                    const porcentagem = ((valor / total) * 100).toFixed(1);
+                    return `${context.label}: ${valor} voto(s) (${porcentagem}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        // 🏅 Monta o ranking
+        const rankingDiv = document.getElementById("ranking-lista");
+        const ordenado = Object.entries(contagem)
+          .sort((a, b) => b[1] - a[1]); // ordem decrescente
+
+        ordenado.forEach(([resposta, votos], i) => {
+          const porcentagem = ((votos / total) * 100).toFixed(1);
+          let medalha = "🏅";
+          if (i === 0) medalha = "🥇";
+          else if (i === 1) medalha = "🥈";
+          else if (i === 2) medalha = "🥉";
+
+          const item = document.createElement("div");
+          item.classList.add("rank-item");
+          item.innerHTML = `${medalha} <span>${resposta}</span> — ${votos} voto(s) (${porcentagem}%)`;
+          rankingDiv.appendChild(item);
+        });
+      })
+      .catch(err => console.error("Erro ao carregar o gráfico:", err));
+  </script>
+
+  <!-- 📄 Tabela de respostas -->
+  <table>
+    <tr>
+      <th>Nome</th>
+      <th>Respostas</th>
+    </tr>
+    <tr th:each="r : ${respostas}">
+      <td th:text="${r.nome}"></td>
+      <td th:text="${r.respostas}"></td>
+    </tr>
+  </table>
+
+  <a href="/">⬅ Voltar à contagem</a>
+</body>
+</html>

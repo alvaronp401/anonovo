@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>🔐 Login do Administrador</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: white;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: gold;
+      text-shadow: 0 0 15px gold;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid gold;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 1.1rem;
+      color: white;
+      margin: 10px;
+      width: 220px;
+      text-align: center;
+    }
+
+    button {
+      background: linear-gradient(90deg, #ffcc00, #ff9900);
+      border: none;
+      border-radius: 20px;
+      color: black;
+      font-weight: 700;
+      padding: 10px 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 0 15px #ffcc00;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #ffdd33, #ffaa00);
+      box-shadow: 0 0 25px #ffcc00, 0 0 50px #ffaa00;
+      transform: scale(1.05);
+    }
+
+    .erro {
+      color: red;
+      margin-top: 15px;
+      text-shadow: 0 0 10px red;
+    }
+
+    .toast {
+      background: gold;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px gold;
+      font-weight: bold;
+      animation: fadeOut 4s forwards;
+      margin-bottom: 15px;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: translateY(0); }
+      70% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div th:if="${mensagem}" class="toast" th:text="${mensagem}"></div>
+
+  <h1>🛡️ Acesso Restrito</h1>
+  <p>Digite a senha de administrador para continuar:</p>
+
+  <form method="POST" action="/admin/login">
+    <input type="password" name="senha" placeholder="Senha de acesso 🔑" required>
+    <br>
+    <button type="submit">Entrar</button>
+  </form>
+
+  <div class="erro" th:if="${erro}" th:text="${erro}"></div>
+
+  <!-- 🔙 Voltar ao início -->
+<a href="/" class="voltar">🏠 Voltar ao Início</a>
+
+
+</body>
+</html>

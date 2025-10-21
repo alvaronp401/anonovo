@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <title>⚙️ Painel do Administrador</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: gold;
+      text-shadow: 0 0 15px gold;
+      margin-top: 30px;
+    }
+
+    .logout {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .logout:hover {
+      color: gold;
+      text-shadow: 0 0 10px gold;
+    }
+
+    table {
+      margin: 30px auto;
+      border-collapse: collapse;
+      width: 80%;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border-bottom: 1px solid gold;
+      padding: 10px;
+    }
+
+    th {
+      color: gold;
+      font-size: 1.1rem;
+    }
+
+    tr:hover {
+      background: rgba(255, 215, 0, 0.2);
+    }
+
+    button {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: darkred;
+    }
+
+    #limpar {
+      background: orange;
+      color: black;
+      font-weight: bold;
+      border-radius: 8px;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 10px gold;
+      transition: all 0.3s;
+    }
+
+    #limpar:hover {
+      background: gold;
+      transform: scale(1.05);
+    }
+
+    canvas {
+      max-width: 650px;
+      margin: 40px auto;
+      display: block;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    h2 {
+      color: gold;
+      text-shadow: 0 0 15px gold;
+    }
+  </style>
+</head>
+<body class="admin-page">
+  <h1>📱 Painel do Administrador ✨</h1>
+  <a class="logout" href="/admin/logout" title="Encerrar sessão">Sair 🔒</a>
+  <p>Veja todas as respostas enviadas e o ranking dos temas!</p>
+
+  <button id="limpar" onclick="limparTudo()">🗑 Limpar Tudo</button>
+
+  <table>
+    <tr>
+      <th>Nome</th>
+      <th>Respostas</th>
+      <th>Ações</th>
+    </tr>
+    <tr th:each="r : ${respostas}">
+      <td th:text="${r.nome}"></td>
+      <td th:text="${r.respostas}"></td>
+      <td>
+        <form th:action="@{'/admin/deletar/' + ${r.id}}" method="post" style="display:inline;">
+          <button type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  </table>
+
+  <h2>📊 Distribuição das respostas 🏆</h2>
+  <canvas id="graficoAdmin"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function limparTudo() {
+      if (confirm("Tem certeza que deseja apagar todas as respostas? 🚨")) {
+        fetch("/admin/limpar", { method: "POST" }).then(() => window.location.reload());
+      }
+    }
+
+    fetch('/respostas/json')
+      .then(res => res.json())
+      .then(data => {
+        const contagem = {};
+        data.forEach(r => {
+          r.respostas.forEach(resp => {
+            contagem[resp] = (contagem[resp] || 0) + 1;
+          });
+        });
+
+        const ctx = document.getElementById("graficoAdmin").getContext("2d");
+        new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: Object.keys(contagem),
+            datasets: [{
+              data: Object.values(contagem),
+              backgroundColor: [
+                "#FFD700", "#FFA500", "#FF6347", "#32CD32",
+                "#1E90FF", "#BA55D3", "#FF69B4", "#40E0D0"
+              ],
+              borderColor: "#000",
+              borderWidth: 1.5
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { labels: { color: "white" } },
+              title: { display: true, text: "Visão geral das respostas 🎯", color: "gold", font: { size: 18 } }
+            }
+          }
+        });
+      });
+  </script>
+  <!-- 🔙 Voltar ao início -->
+<a href="/" class="voltar">🏠 Voltar ao Início</a>
+
+</body>
+</html>

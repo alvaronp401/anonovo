@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Feliz Ano Novo 2025 ✨</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="inicio">
+  <canvas id="fundo"></canvas>
+
+  <div class="conteudo">
+    <h1>✨ Contagem Regressiva para 2025 ✨</h1>
+
+    <div id="contador">
+      <div><span id="dias">00</span><p>Dias</p></div>
+      <div><span id="horas">00</span><p>Horas</p></div>
+      <div><span id="minutos">00</span><p>Min</p></div>
+      <div><span id="segundos">00</span><p>Seg</p></div>
+    </div>
+
+    <p>Prepare-se para o novo ciclo! 🌟</p>
+    <a href="/mensagem" class="botao pulse">Entrar em 2025 🚀</a>
+  </div>
+
+  <a href="/admin" 
+   style="
+     position: fixed;
+     top: 15px;
+     right: 20px;
+     background: rgba(255, 215, 0, 0.2);
+     color: gold;
+     border: 2px solid gold;
+     border-radius: 10px;
+     padding: 6px 12px;
+     text-decoration: none;
+     font-weight: bold;
+     transition: 0.3s;
+   "
+   onmouseover="this.style.background='gold'; this.style.color='black';"
+   onmouseout="this.style.background='rgba(255, 215, 0, 0.2)'; this.style.color='gold';">
+  🧭 Admin
+</a>
+
+  <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+</body>
+</html>
