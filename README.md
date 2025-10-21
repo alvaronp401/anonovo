@@ -41,7 +41,7 @@ cd anonovo
 mvn spring-boot:run
 
 A aplicação estará disponível em:
-👉 http://localhost:8080
+👉 https://anonovo-1.onrender.com
 
 💡 Sobre o projeto
 
