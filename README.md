@@ -19,3 +19,30 @@ Aplicação web com contagem regressiva, quiz interativo e painel administrativo
 
 ## 🧠 Arquitetura
 O projeto segue o padrão **MVC (Model-View-Controller)**:
+
+com.alvaro.anonovo
+┣ controllers/
+┣ model/
+┣ repository/
+┣ service/
+┗ resources/
+
+
+## ⚙️ Como executar localmente
+
+```bash
+# Clone o repositório
+git clone https://github.com/alvaronp401/anonovo.git
+
+# Acesse o diretório
+cd anonovo
+
+# Compile e execute
+mvn spring-boot:run
+
+A aplicação estará disponível em:
+👉 http://localhost:8080
+
+💡 Sobre o projeto
+
+Esse projeto foi desenvolvido como parte do meu portfólio em Java.
